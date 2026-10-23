@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qxell AntiCheat</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome pentru iconițe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<div id="overlay" class="hidden">
+
+    <!-- ─── CONTAINER PRINCIPAL ─── -->
+    <div id="menu-container">
+
+        <!-- ═══ SIDEBAR ═══ -->
+        <aside id="sidebar">
+
+            <!-- Logo + titlu -->
+            <div id="sidebar-header">
+                <div id="logo-wrap">
+                    <div id="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div id="logo-text">
+                        <span id="logo-title">qxellAC</span>
+                        <span id="logo-sub">Admin Panel</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigare tab-uri -->
+            <nav id="nav">
+                <button class="nav-btn active" data-tab="players">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Jucători</span>
+                </button>
+                <button class="nav-btn" data-tab="bans">
+                    <i class="fa-solid fa-ban"></i>
+                    <span>Ban-uri</span>
+                </button>
+                <button class="nav-btn" data-tab="logs">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Loguri</span>
+                </button>
+                <button class="nav-btn" data-tab="strikes">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Strike-uri</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Setări</span>
+                </button>
+            </nav>
+
+            <!-- Footer sidebar -->
+            <div id="sidebar-footer">
+                <div id="server-info">
+                    <i class="fa-solid fa-circle status-dot"></i>
+                    <span id="player-count-side">0 jucători online</span>
+                </div>
+                <button id="close-btn" title="Închide meniu (INSERT)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ═══ CONTENT ═══ -->
+        <main id="content">
+
+            <!-- ── TAB: JUCĂTORI ── -->
+            <section id="tab-players" class="tab active">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <i class="fa-solid fa-users"></i>
+                        <h2>Jucători Online</h2>
+                    </div>
+                    <div class="tab-actions">
+                        <input type="text" id="search-players" placeholder="Caută jucător..." class="search-input" />
+                        <button class="btn-refresh" id="refresh-players">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div id="players-grid" class="card-grid">
+                    <!-- Carduri generate dinamic de JS -->
+                    <div class="loading-placeholder">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <p>Se încarcă jucătorii...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB: BAN-URI ── -->
+            <section id="tab-bans" class="tab">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <i class="fa-solid fa-ban"></i>
+                        <h2>Ban-uri Active</h2>
+                    </div>
+                    <div class="tab-actions">
+                        <input type="text" id="search-bans" placeholder="Caută ban ID / nume..." class="search-input" />
+                        <button class="btn-refresh" id="refresh-bans">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table id="bans-table">
+                        <thead>
+                            <tr>
+                                <th>Ban ID</th>
+                                <th>Jucător</th>
+                                <th>Motiv</th>
+                                <th>Banat de</th>
+                                <th>Data</th>
+                                <th>Expiră</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bans-tbody">
+                            <tr><td colspan="7" class="table-empty">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Se încarcă...
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ── TAB: LOGURI ── -->
+            <section id="tab-logs" class="tab">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <h2>Loguri Detecții</h2>
+                    </div>
+                    <div class="tab-actions">
+                        <select id="log-filter" class="search-input">
+                            <option value="ALL">Toate</option>
+                            <option value="BAN">Ban-uri</option>
+                            <option value="KICK">Kick-uri</option>
+                            <option value="DETECTION">Detecții</option>
+                        </select>
+                        <button class="btn-refresh" id="refresh-logs">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table id="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Jucător</th>
+                                <th>Acțiune</th>
+                                <th>Motiv</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-tbody">
+                            <tr><td colspan="4" class="table-empty">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Se încarcă...
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ── TAB: STRIKE-URI ── -->
+            <section id="tab-strikes" class="tab">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h2>Strike-uri Active</h2>
+                    </div>
+                    <div class="tab-actions">
+                        <button class="btn-refresh" id="refresh-strikes">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div id="strikes-grid" class="card-grid">
+                    <div class="loading-placeholder">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <p>Se încarcă strike-urile...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB: SETĂRI ── -->
+            <section id="tab-settings" class="tab">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <i class="fa-solid fa-gear"></i>
+                        <h2>Setări Rapide</h2>
+                    </div>
+                </div>
+
+                <div id="settings-grid">
+
+                    <div class="settings-card">
+                        <div class="settings-card-title">
+                            <i class="fa-solid fa-ban"></i> Ban manual
+                        </div>
+                        <div class="settings-card-body">
+                            <label>Server ID jucător</label>
+                            <input type="number" id="ban-id-input" placeholder="Ex: 5" class="form-input" />
+                            <label>Motiv</label>
+                            <input type="text" id="ban-reason-input" placeholder="Ex: Cheating - Aimbot" class="form-input" />
+                            <label>Durată (ore, 0 = permanent)</label>
+                            <input type="number" id="ban-duration-input" placeholder="0" class="form-input" value="0" />
+                            <button class="btn-danger full-width" id="ban-submit-btn">
+                                <i class="fa-solid fa-hammer"></i> Execută Ban
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-title">
+                            <i class="fa-solid fa-rotate-left"></i> Unban
+                        </div>
+                        <div class="settings-card-body">
+                            <label>Ban ID</label>
+                            <input type="text" id="unban-id-input" placeholder="Ex: KAC-AB12CD34" class="form-input" />
+                            <button class="btn-success full-width" id="unban-submit-btn">
+                                <i class="fa-solid fa-unlock"></i> Execută Unban
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-title">
+                            <i class="fa-solid fa-camera"></i> Screenshot
+                        </div>
+                        <div class="settings-card-body">
+                            <label>Server ID jucător</label>
+                            <input type="number" id="ss-id-input" placeholder="Ex: 5" class="form-input" />
+                            <button class="btn-primary full-width" id="ss-submit-btn">
+                                <i class="fa-solid fa-camera"></i> Fă Screenshot
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-title">
+                            <i class="fa-solid fa-info-circle"></i> Info Server
+                        </div>
+                        <div class="settings-card-body info-list">
+                            <div class="info-row">
+                                <span>Versiune qxellAC</span>
+                                <span class="badge badge-green">6.8.4</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Jucători online</span>
+                                <span class="badge badge-blue" id="info-players">—</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Ban-uri active</span>
+                                <span class="badge badge-red" id="info-bans">—</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Detecții totale</span>
+                                <span class="badge badge-orange" id="info-detections">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ─── MODAL: ACȚIUNI JUCĂTOR ─── -->
+    <div id="player-modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-player-name">Jucător</h3>
+                <button class="modal-close" id="modal-close-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-player-ids" class="id-list"></div>
+
+                <div class="modal-actions">
+                    <button class="btn-primary modal-action-btn" id="modal-kick-btn">
+                        <i class="fa-solid fa-door-open"></i> Kick
+                    </button>
+                    <button class="btn-warning modal-action-btn" id="modal-ss-btn">
+                        <i class="fa-solid fa-camera"></i> Screenshot
+                    </button>
+                    <button class="btn-danger modal-action-btn" id="modal-ban-btn">
+                        <i class="fa-solid fa-hammer"></i> Ban
+                    </button>
+                </div>
+
+                <div id="modal-ban-form" class="hidden">
+                    <label>Motiv ban</label>
+                    <input type="text" id="modal-ban-reason" placeholder="Motiv..." class="form-input" />
+                    <label>Durată (ore, 0 = permanent)</label>
+                    <input type="number" id="modal-ban-duration" class="form-input" value="0" />
+                    <button class="btn-danger full-width" id="modal-ban-confirm">
+                        <i class="fa-solid fa-hammer"></i> Confirmă Ban
+                    </button>
+                </div>
+
+                <div id="modal-kick-form" class="hidden">
+                    <label>Motiv kick</label>
+                    <input type="text" id="modal-kick-reason" placeholder="Motiv..." class="form-input" />
+                    <button class="btn-primary full-width" id="modal-kick-confirm">
+                        <i class="fa-solid fa-door-open"></i> Confirmă Kick
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TOAST NOTIFICATIONS ─── -->
+    <div id="toast-container"></div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
